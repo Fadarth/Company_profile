@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Login | Admin Panel Pemda Merauke</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+
+    <style>
+        /* 1. Animasi Latar Belakang Gradasi Halus */
+        body {
+            background: linear-gradient(-45deg, #f5f5f9, #e2e2ec, #d8d9fc, #f5f5f9);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .authentication-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 2. Animasi Munculnya Kartu Login */
+        .card-authentication {
+            width: 100%;
+            max-width: 420px;
+            border: 0;
+            border-radius: 1rem;
+            /* Sedikit lebih membulat */
+            box-shadow: 0 10px 30px 0 rgba(67, 89, 113, 0.15);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+
+            /* Animasi Slide Up & Fade In */
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUpFadeIn 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+
+        @keyframes slideUpFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 3. Animasi pada Input Field saat Fokus */
+        .form-control {
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+        }
+
+        .form-control:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(105, 108, 255, 0.15);
+            border-color: #696cff;
+        }
+
+        /* Styling Tombol Login */
+        .btn-primary {
+            background-color: #696cff;
+            border-color: #696cff;
+            border-radius: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary:hover {
+            background-color: #5f61e6;
+            border-color: #5f61e6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(105, 108, 255, 0.4);
+        }
+
+        /* 4. Animasi Loading pada Tombol saat Submit */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
+            /* Mencegah klik ganda */
+        }
+
+        .btn-loading::after {
+            content: "";
+            position: absolute;
+            width: 1.2rem;
+            height: 1.2rem;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="authentication-wrapper px-4">
+        <div class="card card-authentication">
+            <div class="card-body p-sm-5 p-4">
+                <div class="d-flex justify-content-center mb-4">
+                    <span class="fs-3 fw-bolder text-primary d-flex align-items-center gap-3">
+                        <img src="{{ asset('images/logo-pemda.png') }}" alt="Logo Pemda Merauke"
+                            style="height: 40px; width: auto; object-fit: contain; transition: transform 0.3s ease;"
+                            onmouseover="this.style.transform='scale(1.1)'"
+                            onmouseout="this.style.transform='scale(1)'">
+                        Admin Panel
+                    </span>
+                </div>
+
+                @if ($errors->any())
+                    <div class="alert alert-danger py-2" style="animation: slideUpFadeIn 0.5s ease forwards;">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
+
+                <form id="loginForm" action="{{ route('login.post') }}" method="POST">
+                    @csrf
+                    <div class="mb-4">
+                        <label for="email" class="form-label text-muted fw-bold">Email</label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text bg-transparent"><i class='bx bx-user'></i></span>
+                            <input type="email" class="form-control" id="email" name="email"
+                                value="{{ old('email') }}" placeholder="Masukkan email Anda" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted fw-bold" for="password">Password</label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text bg-transparent"><i class='bx bx-lock-alt'></i></span>
+                            <input type="password" id="password" class="form-control" name="password"
+                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 d-flex justify-content-between align-items-center">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                            <label class="form-check-label text-muted" for="remember"> Ingat Saya </label>
+                        </div>
+                    </div>
+
+                    <button id="submitBtn" class="btn btn-primary d-grid w-100" type="submit">Log in</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            const btn = document.getElementById('submitBtn');
+            btn.classList.add('btn-loading');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DashboardController; // Pastikan namespace sesuai
 use App\Http\Controllers\AspirationController;
 use App\Http\Controllers\AuthController;
@@ -28,6 +29,8 @@ Route::post('/login', [AuthController::class, 'login'])
     ->middleware(['guest', 'throttle:5,1']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
+Route::post('/news/{id}/track-view', [NewsController::class, 'trackView'])->name('news.track_view');
+
 // Route Admin (Wajib Login)
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -46,4 +49,6 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     Route::resource('news', NewsController::class)->except(['create', 'edit', 'show']);
     Route::resource('aspirations', AspirationController::class)->only(['index', 'update', 'destroy'])->names('aspirations');
+
+    Route::get('/analytics', [AnalyticsController::class, 'analytics'])->name('analytics.index');
 });

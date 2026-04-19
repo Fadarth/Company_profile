@@ -97,6 +97,13 @@
             </a>
         </li>
 
+        <li class="menu-item {{ request()->routeIs('admin.analytics.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.analytics.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-bar-chart-alt-2"></i>
+                <div data-i18n="Analitik Website">Analitik Website</div>
+            </a>
+        </li>
+
 
         <ul class="menu-inner py-1">
             <li class="menu-header small text-uppercase">

@@ -151,8 +151,8 @@
                         @forelse($recentNews as $news)
                             <div class="col-md-3 col-sm-6 mb-3">
                                 <div class="card h-100 border shadow-none">
-                                    <img class="card-img-top" src="{{ asset($news->image_path) }}" alt="{{ $news->title }}"
-                                        style="height: 120px; object-fit: cover;">
+                                    <img class="card-img-top" src="{{ asset('storage/' . $news->image_path) }}"
+                                        alt="{{ $news->title }}" style="height: 120px; object-fit: cover;">
                                     <div class="card-body p-3">
                                         <span class="badge bg-label-warning mb-2">{{ $news->category }}</span>
                                         <h6 class="card-title mb-1 text-truncate" title="{{ $news->title }}">

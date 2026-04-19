@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\News;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -16,11 +16,11 @@ class NewsService
 
     public function createNews(array $data, UploadedFile $image): News
     {
-        $destinationPath = public_path('uploads/news');
+        // Menyimpan ke folder 'news' di dalam storage/app/public/
         $fileName = time() . '_' . $image->getClientOriginalName();
-        $image->move($destinationPath, $fileName);
+        $path = $image->storeAs('news', $fileName, 'public');
 
-        $data['image_path'] = 'uploads/news/' . $fileName;
+        $data['image_path'] = $path; // Menyimpan path seperti: 'news/nama_file.jpg'
 
         return News::create($data);
     }
@@ -28,15 +28,15 @@ class NewsService
     public function updateNews(News $news, array $data, ?UploadedFile $image): News
     {
         if ($image) {
-            if ($news->image_path && File::exists(public_path($news->image_path))) {
-                File::delete(public_path($news->image_path));
+            // Hapus gambar lama jika ada di storage public
+            if ($news->image_path && Storage::disk('public')->exists($news->image_path)) {
+                Storage::disk('public')->delete($news->image_path);
             }
 
-            $destinationPath = public_path('uploads/news');
             $fileName = time() . '_' . $image->getClientOriginalName();
-            $image->move($destinationPath, $fileName);
+            $path = $image->storeAs('news', $fileName, 'public');
 
-            $data['image_path'] = 'uploads/news/' . $fileName;
+            $data['image_path'] = $path;
         }
 
         $news->update($data);
@@ -46,8 +46,9 @@ class NewsService
 
     public function deleteNews(News $news): bool
     {
-        if ($news->image_path && File::exists(public_path($news->image_path))) {
-            File::delete(public_path($news->image_path));
+        // Hapus file gambar jika ada
+        if ($news->image_path && Storage::disk('public')->exists($news->image_path)) {
+            Storage::disk('public')->delete($news->image_path);
         }
 
         return $news->delete();

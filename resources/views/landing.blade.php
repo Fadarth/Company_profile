@@ -500,17 +500,17 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
             @foreach ($newsList as $news)
-                <div class="bg-white rounded-2xl border border-orange-600/50 shadow-sm cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow-2xl group overflow-hidden"
-                    data-bs-toggle="modal" data-bs-target="#newsModal{{ $news->id }}">
+                <div class="news-card bg-white rounded-2xl border border-orange-600/50 shadow-sm cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow-2xl group flex flex-col h-full overflow-hidden"
+                    data-bs-toggle="modal" data-bs-target="#newsModal{{ $news->id }}"
+                    data-id="{{ $news->id }}">
 
-                    <div class="w-full h-48 bg-slate-100 flex items-center justify-center overflow-hidden">
-                        <img src="{{ asset($news->image_path) }}" alt="{{ $news->title }}"
+                    <div class="w-full h-48 bg-slate-100 flex items-center justify-center overflow-hidden shrink-0">
+                        <img src="{{ asset('storage/' . $news->image_path) }}" alt="{{ $news->title }}"
                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     </div>
 
-                    <div class="p-6">
+                    <div class="p-6 flex flex-col flex-grow">
                         <div class="flex items-center gap-2 mb-3">
                             <span
                                 class="bg-orange-100 text-orange-600 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-widest">
@@ -524,18 +524,32 @@
                             {{ $news->title }}
                         </h4>
 
-                        <p class="text-slate-500 text-sm mt-3 line-clamp-2">
+                        <p class="text-slate-500 text-sm mt-3 mb-6 line-clamp-2">
                             {{ strip_tags($news->description) }}
                         </p>
 
-                        <div class="mt-6 flex items-center text-orange-600 font-semibold text-sm">
-                            Baca Selengkapnya
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="2" stroke="currentColor"
-                                class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
+                        <div class="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <div class="flex items-center text-orange-600 font-semibold text-sm">
+                                Baca Selengkapnya
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke="currentColor"
+                                    class="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                </svg>
+                            </div>
+
+                            <div
+                                class="flex items-center gap-1.5 bg-slate-50 border border-slate-100 text-slate-600 px-3 py-1.5 rounded-full text-xs font-bold shadow-sm group-hover:bg-orange-50 group-hover:text-orange-600 group-hover:border-orange-200 transition-all duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span>{{ number_format($news->views_count, 0, ',', '.') }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -548,17 +562,32 @@
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body p-0">
-                                <img src="{{ asset($news->image_path) }}" alt="{{ $news->title }}"
+                                <img src="{{ asset('storage/' . $news->image_path) }}" alt="{{ $news->title }}"
                                     class="w-full h-64 object-cover">
+
                                 <div class="p-6 md:p-8">
-                                    <div class="flex items-center gap-2 mb-4">
+                                    <div class="flex items-center flex-wrap gap-2 mb-4">
                                         <span
                                             class="bg-orange-100 text-orange-600 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-widest">
                                             {{ $news->category }}
                                         </span>
                                         <span class="text-sm text-slate-500 font-medium">•
                                             {{ $news->formatted_date }}</span>
+
+                                        <span
+                                            class="bg-slate-100 text-slate-600 font-bold text-xs px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm md:ml-auto">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                                class="w-4 h-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                            {{ number_format($news->views_count, 0, ',', '.') }} Views
+                                        </span>
                                     </div>
+
                                     <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-6 leading-tight">
                                         {{ $news->title }}
                                     </h2>
@@ -576,7 +605,6 @@
                     </div>
                 </div>
             @endforeach
-
         </div>
     </section>
 
@@ -628,6 +656,8 @@
             &copy; 2026 Dewan Perwakilan Rakyat Republik Indonesia. All rights reserved.
         </div>
     </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
         function switchPdf(targetId, clickedBtn) {
             // 1. Sembunyikan semua panel PDF
@@ -652,6 +682,25 @@
                 'hover:bg-orange-100', 'hover:text-orange-700');
             clickedBtn.classList.add('bg-orange-600', 'text-white', 'shadow-md');
         }
+        $(document).ready(function() {
+            // Ketika card berita diklik
+            $('.news-card').on('click', function() {
+                let newsId = $(this).data('id');
+                let url = "/news/" + newsId + "/track-view";
+
+                // Kirim request di belakang layar (tanpa reload halaman)
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        console.log("Status view:", response.status);
+                    }
+                });
+            });
+        });
     </script>
 </body>
 

@@ -28,8 +28,12 @@ class PublicAspirationController extends Controller
             'message' => 'required|string',
         ]);
 
-        $this->aspirationService->storePublicAspiration($validated);
+        try {
+            $this->aspirationService->storePublicAspiration($validated, $request->ip());
 
-        return redirect('/#aspirasi')->with('success_aspiration', 'Terima kasih, aspirasi Anda telah berhasil dikirim dan akan segera diproses.');
+            return redirect('/#aspirasi')->with('success_aspiration', 'Terima kasih, aspirasi Anda telah berhasil dikirim dan akan segera diproses.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect('/#aspirasi')->withErrors($e->errors())->withInput();
+        }
     }
 }

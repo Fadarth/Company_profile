@@ -12,6 +12,7 @@ class Aspiration extends Model
         'category',
         'message',
         'status',
+        'ip_address', // Tambahkan ini'ip_address', // Tambahkan ini
         'is_published'
     ];
 }

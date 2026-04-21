@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Aspiration;
+use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class AspirationService
 {
@@ -19,15 +21,27 @@ class AspirationService
     }
 
     // Untuk Masyarakat: Menyimpan aspirasi baru
-    public function storePublicAspiration(array $data)
+    public function storePublicAspiration(array $data, string $ipAddress) // Tambahkan parameter $ipAddress
     {
+        $recentAspiration = Aspiration::where('ip_address', $ipAddress)
+            ->where('created_at', '>=', Carbon::now()->subHour())
+            ->first();
+
+        if ($recentAspiration) {
+            throw ValidationException::withMessages([
+                'limit' => 'Anda baru saja mengirimkan aspirasi. Silakan tunggu 1 jam lagi untuk mengirim kembali.'
+            ]);
+        }
+
+        // 3. Jika aman, simpan datanya
         return Aspiration::create([
             'name' => $data['name'],
             'contact' => $data['contact'] ?? null,
             'category' => $data['category'],
             'message' => $data['message'],
-            'status' => 'dalam_proses', // Default selalu dalam proses
-            'is_published' => false, // Default tidak tampil sampai di-acc admin
+            'ip_address' => $ipAddress, // Simpan IP-nya
+            'status' => 'dalam_proses',
+            'is_published' => false,
         ]);
     }
 

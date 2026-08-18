@@ -30,17 +30,19 @@
                         <tr>
                             <td>{{ $news->formatted_date }}</td>
                             <td>
-                                <img src="{{ asset($news->image_path) }}" alt="Img"
+                                <img src="{{ asset('storage/' . $news->image_path) }}" alt="Img"
                                     style="width: 80px; border-radius: 8px;">
                             </td>
                             <td><strong>{{ $news->title }}</strong></td>
                             <td><span class="badge bg-label-info">{{ $news->category }}</span></td>
                             <td>
+                                <div id="desc-{{ $news->id }}" class="d-none">{!! $news->description !!}</div>
+
                                 <button type="button" class="btn btn-sm btn-info btn-edit" data-bs-toggle="modal"
                                     data-bs-target="#editModal" data-id="{{ $news->id }}"
                                     data-title="{{ $news->title }}" data-category="{{ $news->category }}"
                                     data-date="{{ $news->published_date }}"
-                                    data-description="{{ htmlspecialchars($news->description) }}">
+                                    data-image="{{ asset('storage/' . $news->image_path) }}">
                                     <i class="bx bx-edit-alt me-1"></i> Edit
                                 </button>
 
@@ -137,7 +139,12 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Ganti Gambar (Opsional)</label>
-                                <input type="file" name="image" class="form-control" accept="image/*">
+                                <div class="mb-2">
+                                    <img id="preview_image" src="" alt="Preview"
+                                        style="max-width: 150px; border-radius: 8px; display: none;">
+                                </div>
+                                <input type="file" name="image" id="edit_image_input" class="form-control"
+                                    accept="image/*">
                             </div>
                         </div>
                         <div class="row">
@@ -162,41 +169,54 @@
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Inisialisasi Quill Editor untuk Create
             var quillCreate = new Quill('#editor-create', {
                 theme: 'snow',
                 placeholder: 'Tulis isi berita di sini...'
             });
 
-            // Inisialisasi Quill Editor untuk Edit
             var quillEdit = new Quill('#editor-edit', {
                 theme: 'snow'
             });
 
-            // Saat form Create di-submit, copy isi Quill ke hidden input
             $('#form_create').on('submit', function() {
                 $('#hidden_desc_create').val(quillCreate.root.innerHTML);
             });
 
-            // Saat form Edit di-submit, copy isi Quill ke hidden input
             $('#form_edit').on('submit', function() {
                 $('#hidden_desc_edit').val(quillEdit.root.innerHTML);
             });
 
-            // Menangani klik tombol Edit
             $('.btn-edit').on('click', function() {
                 let id = $(this).data('id');
                 $('#edit_title').val($(this).data('title'));
                 $('#edit_category').val($(this).data('category'));
                 $('#edit_date').val($(this).data('date'));
 
-                // Masukkan data HTML lama ke dalam Quill Edit
-                let rawDescription = $(this).data('description');
-                quillEdit.root.innerHTML = rawDescription;
+                // Set preview gambar lama
+                let imageUrl = $(this).data('image');
+                if (imageUrl) {
+                    $('#preview_image').attr('src', imageUrl).show();
+                } else {
+                    $('#preview_image').hide();
+                }
+
+                // Ambil data HTML dari DIV tersembunyi (agar tidak muncul tag p p)
+                let rawDescription = $('#desc-' + id).html();
+                // Gunakan fitur paste HTML bawaan Quill
+                quillEdit.clipboard.dangerouslyPasteHTML(rawDescription);
 
                 let updateUrl = "{{ route('admin.news.update', ':id') }}";
                 updateUrl = updateUrl.replace(':id', id);
                 $('#form_edit').attr('action', updateUrl);
+            });
+
+            // (Opsional) Preview gambar baru jika diubah di modal edit
+            $('#edit_image_input').on('change', function(e) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#preview_image').attr('src', e.target.result).show();
+                }
+                reader.readAsDataURL(this.files[0]);
             });
         });
     </script>

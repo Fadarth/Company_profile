@@ -417,10 +417,38 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @if (session('success_aspiration'))
-                <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-xl">
-                    {{ session('success_aspiration') }}
+                <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-xl relative"
+                    role="alert">
+                    <span class="block sm:inline pr-8">{{ session('success_aspiration') }}</span>
+
+                    <button type="button" onclick="this.parentElement.style.display='none'"
+                        class="absolute top-0 bottom-0 right-0 px-4 py-3 flex items-center text-green-700 hover:text-green-900 transition-colors">
+                        <svg class="fill-current h-5 w-5" role="button" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20">
+                            <title>Tutup</title>
+                            <path
+                                d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                        </svg>
+                    </button>
                 </div>
             @endif
+
+            @error('limit')
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative mb-4"
+                    role="alert">
+                    <span class="block sm:inline pr-8">{{ $message }}</span>
+
+                    <button type="button" onclick="this.parentElement.style.display='none'"
+                        class="absolute top-0 bottom-0 right-0 px-4 py-3 flex items-center text-red-700 hover:text-red-900 transition-colors">
+                        <svg class="fill-current h-5 w-5" role="button" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20">
+                            <title>Tutup</title>
+                            <path
+                                d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+                        </svg>
+                    </button>
+                </div>
+            @enderror
 
             <div class="flex items-center gap-3 mb-8">
                 <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"

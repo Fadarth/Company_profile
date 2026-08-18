@@ -113,12 +113,16 @@
 @push('page-script')
     <script>
         $(document).ready(function() {
-            $('.btn-edit').on('click', function() {
+            // Gunakan document.on agar tombol di dalam tabel tetap terbaca event klik-nya
+            $(document).on('click', '.btn-edit', function() {
                 let id = $(this).data('id');
+
+                // Masukkan data ke dalam modal
                 $('#view_message').val($(this).data('message'));
                 $('#edit_status').val($(this).data('status'));
                 $('#edit_published').val($(this).data('published') ? 1 : 0);
 
+                // Ubah action URL form sesuai ID aspirasi
                 let updateUrl = "{{ route('admin.aspirations.update', ':id') }}";
                 updateUrl = updateUrl.replace(':id', id);
                 $('#editForm').attr('action', updateUrl);
